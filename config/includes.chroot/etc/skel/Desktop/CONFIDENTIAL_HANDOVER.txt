@@ -1,0 +1,42 @@
+================================================================================
+                        BurdaOS — Read Me (Or Don't)
+================================================================================
+TO      : Jaroslav Burda (Burdik)
+FROM    : Your Linux & Hardware Class
+SYSTEM  : BurdaOS (Debian 12 Bookworm / BGNOME / System-Level Wine)
+================================================================================
+
+Dear Jaroslav,
+
+Congratulations—you now own a custom operating system named after yourself.
+Consider it a small thank-you gift from the class for actually teaching us how
+Linux, kernels, filesystems, networking, and real hardware work (without ever
+losing your patience the way this terminal definitely is about to).
+
+Quick Specs & Shortcuts:
+- Hardware Target : 4 CPU Cores / 8GB RAM (zram-tools enabled, so try not to
+                    open 400 browser tabs and blame the VM).
+- Desktop         : BGNOME (Custom Dark Frosted-Glass GNOME Theme) with
+                    floating bottom dock and dark Qt5/Qt6 styling.
+- UX Shortcuts    : Super+V (Clipboard History), Space in Files (instant
+                    Sushi preview), right-click in Files ("Open in Terminal" /
+                    "Open as Administrator"), Super+Arrows (Win11 snap/tile),
+                    Caffeine (keep screen awake during lectures), and live
+                    CPU/RAM/temp readouts in the bar.
+- Windows Support : System-level Wine + wine32/wine64 + binfmt. Double-click
+                    any .exe, or use "Windows Compatibility Manager" on your
+                    Desktop to toggle Win 7 / Win 10 / Win 11 modes.
+- Office & Sync   : ONLYOFFICE Desktop Editors (native .docx/.xlsx/.pptx) paired
+                    with "Microsoft OneDrive Sync" (~/OneDrive) and Microsoft
+                    365 Online so documents stay synced with Microsoft Office.
+- Login           : Jaroslav Burda (username: Burdik) / Password: Docasne2025+
+- Terminal Note   : Standard output (stdout) and exit codes behave 100% normally
+                    for real scripting and piping. Standard error (stderr), on
+                    the other hand, has a few opinions about your typos,
+                    Ctrl+C habits, broken pipes, and failed sudo attempts.
+
+Open GNOME Terminal whenever you're ready to be judged by neofetch.
+
+Thanks for everything,
+Your Linux & Hardware Class
+================================================================================

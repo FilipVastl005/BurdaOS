@@ -2,6 +2,7 @@
 # ==============================================================================
 # BurdaOS — QEMU/KVM Hardware-Locked VM Test Script
 # Target Profile: Strictly 4 CPU Cores (-smp 4) and 8GB RAM (-m 8192)
+# Usage: ./test-vm.sh [--gl] [--bios] [path/to/image.iso]
 # ==============================================================================
 set -euo pipefail
 
@@ -14,7 +15,17 @@ if ! command -v qemu-system-x86_64 >/dev/null 2>&1; then
     exit 1
 fi
 
-ISO_FILE="${1:-}"
+USE_GL=0
+USE_BIOS=0
+ISO_FILE=""
+for arg in "$@"; do
+    case "$arg" in
+        --gl) USE_GL=1 ;;
+        --bios) USE_BIOS=1 ;;
+        *) ISO_FILE="$arg" ;;
+    esac
+done
+
 if [[ -z "$ISO_FILE" ]]; then
     if [[ -f "$DEFAULT_ISO" ]]; then
         ISO_FILE="$DEFAULT_ISO"
@@ -42,27 +53,45 @@ else
 fi
 
 OVMF_ARGS=()
-for ovmf in \
-    /usr/share/edk2/x64/OVMF_CODE.4m.fd \
-    /usr/share/edk2/x64/OVMF_CODE.fd \
-    /usr/share/OVMF/OVMF_CODE.fd; do
-    if [[ -r "$ovmf" ]]; then
-        OVMF_ARGS=(-drive "if=pflash,format=raw,readonly=on,file=${ovmf}")
-        break
+TMP_VARS=""
+cleanup() {
+    [[ -n "$TMP_VARS" && -f "$TMP_VARS" ]] && rm -f "$TMP_VARS"
+}
+trap cleanup EXIT
+
+if [[ "$USE_BIOS" -eq 0 ]]; then
+    if [[ -r /usr/share/edk2/x64/OVMF_CODE.4m.fd && -r /usr/share/edk2/x64/OVMF_VARS.4m.fd ]]; then
+        TMP_VARS="$(mktemp --suffix=.ovmf-vars.fd)"
+        cp -f /usr/share/edk2/x64/OVMF_VARS.4m.fd "$TMP_VARS"
+        OVMF_ARGS=(
+            -drive "if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd"
+            -drive "if=pflash,format=raw,file=${TMP_VARS}"
+        )
+    elif [[ -r /usr/share/edk2/x64/OVMF.4m.fd ]]; then
+        TMP_VARS="$(mktemp --suffix=.ovmf.fd)"
+        cp -f /usr/share/edk2/x64/OVMF.4m.fd "$TMP_VARS"
+        OVMF_ARGS=(-drive "if=pflash,format=raw,file=${TMP_VARS}")
+    else
+        printf '[BurdaOS VM WARN] OVMF firmware not found; booting with legacy SeaBIOS.\n' >&2
     fi
-done
+fi
+
+DISPLAY_ARGS=(-device virtio-vga -display gtk,gl=off)
+if [[ "$USE_GL" -eq 1 ]]; then
+    DISPLAY_ARGS=(-device virtio-vga-gl -display gtk,gl=on)
+fi
 
 printf '[BurdaOS VM] Booting %s with 4 CPU cores and 8192MB RAM...\n' "$ISO_FILE"
 
-exec qemu-system-x86_64 \
+qemu-system-x86_64 \
+    -machine q35 \
     "${KVM_ARGS[@]}" \
     "${OVMF_ARGS[@]}" \
     -smp 4 \
     -m 8192 \
     -boot d \
     -cdrom "$ISO_FILE" \
-    -vga virtio \
-    -display gtk,gl=on \
+    "${DISPLAY_ARGS[@]}" \
     -device virtio-net-pci,netdev=net0 \
     -netdev user,id=net0 \
     -device intel-hda \

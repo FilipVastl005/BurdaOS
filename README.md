@@ -22,9 +22,12 @@ It pairs a genuinely usable hardware/networking teaching toolkit, custom **BGNOM
 - **Hardware Envelope:** Tuned for **4 CPU cores / 8GB RAM** using `zram-tools` (`zstd` compressed swap in `/etc/default/zramswap`) and VM sysctl tuning (`/etc/sysctl.d/99-burdaos-memory.conf`).
 - **Bootloaders:** Custom `BurdaOS` GRUB2 (BIOS/UEFI) and ISOLINUX menus supporting Standard Boot, Copy to RAM (`toram`), and Safe Graphics (`nomodeset`).
 
-### 2. Custom BGNOME Desktop
-- **Theme:** Extracted **BGNOME-Dark** and **BGNOME-Light** GNOME Shell, GTK3, and GTK4 stylesheets with circular close buttons (`button-layout='close:'`), `prefer-dark`, `Cantarell 11`, and `JetBrains Mono 10`.
+### 2. Custom BGNOME Desktop & UX Upgrades
+- **Theme:** Extracted **BGNOME-Dark** and **BGNOME-Light** GNOME Shell, GTK3, and GTK4 stylesheets with circular close buttons (`button-layout='close:'`), `prefer-dark`, `Cantarell 11`, `JetBrains Mono 10`, and `adwaita-qt`/`qt5ct`/`qt6ct` dark styling for Qt apps.
 - **Dock & Extensions:** Floating bottom dock (`gnome-shell-extension-dashtodock`) styled by BGNOME's `#dash` CSS, `user-theme`, `appindicator`, and `desktop-icons-ng`.
+- **Snappy Responsiveness & Window Snapping:** `gnome-shell-extension-impatience` (`0.55` animation speed scale) and `gnome-shell-extension-tiling-assistant` for Windows 11-style edge/quarter snapping (`Super+Arrows`).
+- **Clipboard History & File Manager Polish:** `gnome-shell-extension-gpaste` (`Super+V` persistent clipboard history), `gnome-sushi` (`Space` instant preview in Files), `nautilus-extension-gnome-terminal`, and `nautilus-admin`.
+- **Lecture Utilities & Zero-Nag Setup:** `gnome-shell-extension-caffeine` (one-click keep-awake toggle), `gnome-shell-extension-system-monitor` (live CPU/RAM/temp readouts), disabled GNOME Initial Setup nag, and telemetry/problem reporting turned off in `dconf`.
 - **Wallpapers & Login Banner:** 4 BGNOME SVG wallpapers in `/usr/share/backgrounds/bgnome/` plus a GDM3 login banner (`"Oh, you're back. Go ahead and log in whenever you feel ready—it's not like the CPU has anything better to do."`).
 
 ### 3. Passive-Aggressive CLI & Telemetry

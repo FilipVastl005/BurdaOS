@@ -1,6 +1,50 @@
 #!/bin/sh
-# Compile GSettings/dconf databases, enable system services, and set OS branding.
+# Resolve installed GNOME extension UUIDs, compile GSettings/dconf databases,
+# enable system services, and set OS branding.
 set -e
+
+echo "[BurdaOS Hook] Resolving installed GNOME Shell extension UUIDs..."
+EXT_DIR="/usr/share/gnome-shell/extensions"
+if [ -d "$EXT_DIR" ]; then
+    EXT_LIST=""
+    for pattern in \
+        "user-theme*" \
+        "dash-to-dock*" \
+        "appindicator*" \
+        "ding*" \
+        "*gpaste*" \
+        "*GPaste*" \
+        "*tiling-assistant*" \
+        "*caffeine*" \
+        "*system-monitor*" \
+        "*impatience*"
+    do
+        for path in "$EXT_DIR"/$pattern; do
+            [ -d "$path" ] || continue
+            uuid=$(basename "$path")
+            case ",$EXT_LIST," in
+                *",'$uuid',"* ) ;;
+                * )
+                    if [ -z "$EXT_LIST" ]; then
+                        EXT_LIST="'$uuid'"
+                    else
+                        EXT_LIST="$EXT_LIST, '$uuid'"
+                    fi
+                    ;;
+            esac
+        done
+    done
+
+    if [ -n "$EXT_LIST" ]; then
+        mkdir -p /etc/dconf/db/local.d
+        cat > /etc/dconf/db/local.d/01-burdaos-extensions << EOF
+[org/gnome/shell]
+disable-user-extensions=false
+enabled-extensions=[${EXT_LIST}]
+EOF
+        echo "[BurdaOS Hook] Enabled extensions: [${EXT_LIST}]"
+    fi
+fi
 
 echo "[BurdaOS Hook] Compiling GLib GSettings schemas..."
 if command -v glib-compile-schemas >/dev/null 2>&1; then

@@ -1,5 +1,5 @@
 # ==============================================================================
-# BurdaOS — BGNOME-Dark Desktop Layout (dconf)
+# BurdaOS — BGNOME-Dark Desktop & Enhanced UX Defaults (dconf)
 # ==============================================================================
 
 [org/gnome/desktop/interface]
@@ -8,6 +8,8 @@ color-scheme='prefer-dark'
 font-name='Cantarell 11'
 document-font-name='Cantarell 11'
 monospace-font-name='JetBrains Mono 10'
+font-antialiasing='rgba'
+font-hinting='slight'
 icon-theme='Adwaita'
 cursor-theme='Adwaita'
 enable-animations=true
@@ -19,6 +21,10 @@ show-battery-percentage=true
 theme='BGNOME-Dark'
 button-layout='close:'
 titlebar-font='Cantarell 11'
+
+[org/gnome/mutter]
+edge-tiling=true
+center-new-windows=true
 
 [org/gnome/desktop/background]
 picture-uri='file:///usr/share/backgrounds/bgnome/bgnome-light.svg'
@@ -34,7 +40,7 @@ primary-color='#141416'
 
 [org/gnome/shell]
 disable-user-extensions=false
-enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com']
+enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com', 'GPaste@gnome-shell-extensions.gnome.org', 'tiling-assistant@leleat-on-github', 'caffeine@patapon.info', 'system-monitor@paradoxxx.zero.gmail.com', 'impatience@gfxmonk.net']
 favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'onlyoffice-desktopeditors.desktop', 'burdaos-onedrive-sync.desktop', 'burdaos-wine-manager.desktop', 'gparted.desktop', 'gnome-system-monitor.desktop', 'gnome-control-center.desktop']
 
 [org/gnome/shell/extensions/user-theme]
@@ -56,3 +62,74 @@ show-home=true
 show-trash=true
 start-corner='top-left'
 icon-size='standard'
+
+# --- GPaste Clipboard History (Win+V / Super+V) ---
+[org/gnome/GPaste]
+save-history=true
+max-history-size=100
+track-changes=true
+synchronize-clipboards=true
+show-history='<Super>v'
+
+# --- Tiling Assistant (Windows 11 Snap & Quarter Tiling) ---
+[org/gnome/shell/extensions/tiling-assistant]
+enable-tiling-popup=true
+enable-advanced-experimental-features=true
+tile-left-half=['<Super>Left']
+tile-right-half=['<Super>Right']
+tile-maximize=['<Super>Up']
+restore-window=['<Super>Down']
+tile-topleft-quarter=['<Super><Ctrl>Left']
+tile-topright-quarter=['<Super><Ctrl>Right']
+tile-bottomleft-quarter=['<Super><Alt>Left']
+tile-bottomright-quarter=['<Super><Alt>Right']
+
+# --- Impatience (Snappy Shell Animations) ---
+[org/gnome/shell/extensions/impatience]
+speed-scaling=0.55
+
+# --- Caffeine (One-Click Lecture Keep-Awake) ---
+[org/gnome/shell/extensions/caffeine]
+show-indicator='always'
+show-notifications=false
+restore-state=true
+
+# --- System Monitor (Subtle Live CPU / RAM / Temp Readouts) ---
+[org/gnome/shell/extensions/system-monitor]
+cpu-display=true
+memory-display=true
+thermal-display=true
+net-display=false
+compact-display=true
+icon-display=false
+cpu-style='digit'
+memory-style='digit'
+thermal-style='digit'
+
+# --- Nautilus & GTK File Chooser Polish ---
+[org/gnome/nautilus/preferences]
+default-folder-viewer='list-view'
+show-create-link=true
+show-delete-permanently=true
+
+[org/gtk/settings/file-chooser]
+sort-directories-first=true
+
+# --- Zero-Friction Privacy & No Nagging ---
+[org/gnome/desktop/privacy]
+report-technical-problems=false
+send-software-usage-stats=false
+remove-old-temp-files=true
+remove-old-trash-files=true
+old-files-age=uint32 14
+
+[org/gnome/system/location]
+enabled=false
+
+[org/gnome/software]
+allow-updates=false
+download-updates=false
+download-updates-notify=false
+
+[org/gnome/desktop/notifications]
+show-in-lock-screen=false
