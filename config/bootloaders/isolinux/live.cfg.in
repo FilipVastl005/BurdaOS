@@ -1,0 +1,18 @@
+label live-@FLAVOUR@
+    menu label ^BurdaOS (@FLAVOUR@)
+    menu default
+    linux @KERNEL@
+    initrd @INITRD@
+    append @APPEND_LIVE@
+
+label live-@FLAVOUR@-toram
+    menu label BurdaOS (@FLAVOUR@, ^Copy to RAM)
+    linux @KERNEL@
+    initrd @INITRD@
+    append @APPEND_LIVE@ toram
+
+label live-@FLAVOUR@-failsafe
+    menu label BurdaOS (@FLAVOUR@, ^Safe Graphics)
+    linux @KERNEL@
+    initrd @INITRD@
+    append @APPEND_LIVE@ nomodeset

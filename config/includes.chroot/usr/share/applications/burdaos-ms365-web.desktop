@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Microsoft 365 Online
+GenericName=Word, Excel & PowerPoint Web
+Comment=Open Microsoft 365 Web in Firefox ESR
+Exec=firefox-esr https://www.office.com
+Icon=firefox-esr
+Terminal=false
+Categories=Office;Network;WebBrowser;
+StartupNotify=true

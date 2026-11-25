@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Windows Compatibility Manager
+GenericName=Wine Mode & Prefix Switcher
+Comment=Switch Wine Windows compatibility (Win 7 / 10 / 11), manage prefixes, and run .exe apps
+Exec=/usr/local/bin/burdaos-wine-manager
+Icon=wine
+Terminal=false
+Categories=System;Settings;Emulator;
+StartupNotify=true

@@ -1,0 +1,38 @@
+# ==============================================================================
+# BGNOME Desktop Default GSettings Override for Debian-based Distribution
+# Path on target system: /usr/share/glib-2.0/schemas/01_bgnome.gschema.override
+# Clean Apple-like layout with single close button
+# ==============================================================================
+
+[org.gnome.desktop.interface]
+gtk-theme = 'BGNOME-Dark'
+color-scheme = 'prefer-dark'
+font-name = 'Cantarell 11'
+document-font-name = 'Cantarell 11'
+monospace-font-name = 'JetBrains Mono 10'
+cursor-theme = 'Adwaita'
+icon-theme = 'Adwaita'
+enable-animations = true
+
+[org.gnome.shell.extensions.user-theme]
+name = 'BGNOME-Dark'
+
+[org.gnome.desktop.background]
+picture-uri = 'file:///usr/share/backgrounds/bgnome/bgnome-light.svg'
+picture-uri-dark = 'file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-options = 'zoom'
+primary-color = '#141416'
+secondary-color = '#0E0E10'
+
+[org.gnome.desktop.screensaver]
+picture-uri = 'file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-options = 'zoom'
+
+[org.gnome.desktop.wm.preferences]
+theme = 'BGNOME-Dark'
+button-layout = 'close:'
+titlebar-font = 'Cantarell 11'
+
+[org.gnome.shell]
+favorite-apps = ['org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'firefox-esr.desktop', 'org.gnome.Settings.desktop']
+enabled-extensions = ['user-theme@gnome-shell-extensions.gcampax.github.com']

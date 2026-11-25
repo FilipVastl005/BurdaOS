@@ -1,0 +1,117 @@
+{
+  "name": "BGNOME",
+  "displayName": "BGNOME Desktop",
+  "brand": "BGNOME",
+  "description": "Clean, Apple-inspired minimal GNOME Shell & GTK4 theme with system top bar, frosted glass dock, Pascal Triangle wallpaper and Light/Dark modes with live accent switching.",
+  "geometry": {
+    "panelMarginTop": 0,
+    "panelMarginX": 0,
+    "panelHeight": 36,
+    "panelRadius": 0,
+    "dockRadius": 22,
+    "quickSettingsRadius": 20,
+    "quickToggleRadius": 14,
+    "windowRadius": 14,
+    "buttonRadius": 10,
+    "cardRadius": 12,
+    "pillRadius": 999,
+    "buttonLayout": "close:"
+  },
+  "typography": {
+    "sans": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Inter\", \"Cantarell\", sans-serif",
+    "mono": "\"SF Mono\", \"JetBrains Mono\", monospace"
+  },
+  "accents": {
+    "blue": {
+      "name": "Blue",
+      "dark": "#0A84FF",
+      "light": "#0071E3"
+    },
+    "purple": {
+      "name": "Purple",
+      "dark": "#BF5AF2",
+      "light": "#AF52DE"
+    },
+    "orange": {
+      "name": "Orange",
+      "dark": "#FF9F0A",
+      "light": "#FF9500"
+    },
+    "green": {
+      "name": "Green",
+      "dark": "#30D158",
+      "light": "#34C759"
+    },
+    "graphite": {
+      "name": "Graphite",
+      "dark": "#98989D",
+      "light": "#8E8E93"
+    }
+  },
+  "modes": {
+    "dark": {
+      "themeName": "BGNOME-Dark",
+      "label": "BGNOME Dark",
+      "colorScheme": "prefer-dark",
+      "bgBase": "#18181B",
+      "bgSurface": "#202024",
+      "bgElevated": "#2A2A30",
+      "bgCard": "#24242A",
+      "glassPanel": "rgba(24, 24, 27, 0.88)",
+      "glassPopover": "rgba(32, 32, 36, 0.94)",
+      "glassDock": "rgba(42, 42, 50, 0.65)",
+      "glassCard": "rgba(44, 44, 52, 0.55)",
+      "glassHover": "rgba(255, 255, 255, 0.08)",
+      "glassActive": "rgba(255, 255, 255, 0.14)",
+      "borderGlass": "rgba(255, 255, 255, 0.10)",
+      "borderRim": "rgba(255, 255, 255, 0.22)",
+      "borderStrong": "rgba(255, 255, 255, 0.20)",
+      "borderSubtle": "rgba(255, 255, 255, 0.08)",
+      "accentPrimary": "#0A84FF",
+      "accentSecondary": "#0071E3",
+      "accentSoft": "#64D2FF",
+      "accentForeground": "#FFFFFF",
+      "textPrimary": "#F5F5F7",
+      "textSecondary": "#A1A1A6",
+      "textMuted": "#71717A",
+      "success": "#30D158",
+      "warning": "#FF9F0A",
+      "destructive": "#FF453A",
+      "shadowColor": "rgba(0, 0, 0, 0.45)",
+      "glowColor": "rgba(10, 132, 255, 0.22)",
+      "wallpaper": "bgnome-dark.svg"
+    },
+    "light": {
+      "themeName": "BGNOME-Light",
+      "label": "BGNOME Light",
+      "colorScheme": "prefer-light",
+      "bgBase": "#E5E5EA",
+      "bgSurface": "#FFFFFF",
+      "bgElevated": "#F2F2F6",
+      "bgCard": "#F7F7FA",
+      "glassPanel": "rgba(229, 229, 234, 0.88)",
+      "glassPopover": "rgba(255, 255, 255, 0.95)",
+      "glassDock": "rgba(255, 255, 255, 0.65)",
+      "glassCard": "rgba(255, 255, 255, 0.85)",
+      "glassHover": "rgba(0, 0, 0, 0.05)",
+      "glassActive": "rgba(0, 0, 0, 0.09)",
+      "borderGlass": "rgba(0, 0, 0, 0.10)",
+      "borderRim": "rgba(255, 255, 255, 0.95)",
+      "borderStrong": "rgba(0, 0, 0, 0.18)",
+      "borderSubtle": "rgba(0, 0, 0, 0.07)",
+      "accentPrimary": "#0071E3",
+      "accentSecondary": "#0A84FF",
+      "accentSoft": "#0056B3",
+      "accentForeground": "#FFFFFF",
+      "textPrimary": "#1D1D1F",
+      "textSecondary": "#6E6E73",
+      "textMuted": "#8E8E93",
+      "success": "#34C759",
+      "warning": "#FF9500",
+      "destructive": "#FF3B30",
+      "shadowColor": "rgba(0, 0, 0, 0.12)",
+      "glowColor": "rgba(0, 113, 227, 0.16)",
+      "wallpaper": "bgnome-light.svg"
+    }
+  }
+}

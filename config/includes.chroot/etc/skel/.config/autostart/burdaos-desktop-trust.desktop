@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=BurdaOS Desktop Launcher Trust
+Comment=Marks desktop shortcuts trusted for GNOME DING on first login
+Exec=/usr/local/bin/burdaos-desktop-trust
+OnlyShowIn=GNOME;
+NoDisplay=true

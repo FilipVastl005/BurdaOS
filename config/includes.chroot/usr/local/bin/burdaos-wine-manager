@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# BurdaOS — Windows Compatibility Manager (Zenity + Wine)
+# Lets you switch Wine Windows compatibility modes (Win 7 / 10 / 11),
+# manage prefixes, launch winetricks/winecfg, and run .exe files without CLI.
+# ==============================================================================
+set -u
+
+PREFIX_BASE="${HOME}/.wine-prefixes"
+mkdir -p "${PREFIX_BASE}"
+
+DEFAULT_PREFIX="${HOME}/.wine"
+ACTIVE_PREFIX="${WINEPREFIX:-$DEFAULT_PREFIX}"
+
+get_current_winver() {
+    local prefix="$1"
+    if [[ ! -d "$prefix" ]]; then
+        printf 'Not initialized (because nobody clicked anything yet)'
+        return
+    fi
+    local ver
+    ver=$(WINEPREFIX="$prefix" wine reg query "HKCU\\Software\\Wine" /v Version 2>/dev/null \
+        | awk '/Version/ {print $NF}' | tr -d '\r')
+    if [[ -n "$ver" ]]; then
+        printf '%s' "$ver"
+    else
+        printf 'Default (win10/winecfg)'
+    fi
+}
+
+set_winver() {
+    local prefix="$1"
+    local winver="$2"
+    local label="$3"
+
+    (
+        echo "10"
+        echo "# Initializing Wine prefix (${prefix}). Try to look patient..."
+        WINEPREFIX="$prefix" WINEDEBUG=-all wineboot -u >/dev/null 2>&1 || true
+        echo "60"
+        echo "# Pretending to be ${label} (${winver})..."
+        if ! WINEPREFIX="$prefix" WINEDEBUG=-all winecfg -v "$winver" >/dev/null 2>&1; then
+            WINEPREFIX="$prefix" WINEDEBUG=-all wine reg add "HKCU\\Software\\Wine" /v Version /t REG_SZ /d "$winver" /f >/dev/null 2>&1
+        fi
+        echo "100"
+        echo "# Done. Somehow it worked."
+    ) | zenity --progress \
+        --title="BurdaOS Windows Compatibility Manager" \
+        --text="Configuring ${label}..." \
+        --percentage=0 \
+        --auto-close \
+        --no-cancel
+
+    zenity --info \
+        --title="BurdaOS Windows Compatibility Manager" \
+        --text="Active Prefix: ${prefix}\nWindows Mode set to: ${label} (${winver}).\nNow go run whatever .exe you couldn't live without."
+}
+
+select_or_create_prefix() {
+    local prefixes=("$DEFAULT_PREFIX (Default)")
+    local dir
+    for dir in "${PREFIX_BASE}"/*; do
+        [[ -d "$dir" ]] && prefixes+=("$dir")
+    done
+    prefixes+=("+ Create New Wine Prefix")
+
+    local choice
+    choice=$(zenity --list \
+        --title="Select or Create Wine Prefix" \
+        --text="Current active prefix:\n${ACTIVE_PREFIX}" \
+        --column="Wine Prefix" \
+        "${prefixes[@]}" \
+        --width=520 --height=320) || return
+
+    if [[ "$choice" == "+ Create New Wine Prefix" ]]; then
+        local name
+        name=$(zenity --entry \
+            --title="New Wine Prefix" \
+            --text="Enter a prefix name (e.g. office, diagnostic-tool, win7-legacy):" \
+            --entry-text="win10-app") || return
+        name="${name//[^a-zA-Z0-9_-]/_}"
+        [[ -n "$name" ]] || return
+        ACTIVE_PREFIX="${PREFIX_BASE}/${name}"
+        mkdir -p "$ACTIVE_PREFIX"
+        WINEPREFIX="$ACTIVE_PREFIX" WINEDEBUG=-all wineboot -u >/dev/null 2>&1 || true
+        zenity --info --title="Prefix Created" --text="Created and selected prefix:\n${ACTIVE_PREFIX}"
+    else
+        ACTIVE_PREFIX="${choice% (Default)}"
+    fi
+}
+
+if ! command -v zenity >/dev/null 2>&1 || ! command -v wine >/dev/null 2>&1; then
+    printf 'zenity and wine are required.\n' >&2
+    exit 1
+fi
+
+while true; do
+    CURRENT_VER="$(get_current_winver "$ACTIVE_PREFIX")"
+    ACTION=$(zenity --list \
+        --title="BurdaOS Windows Compatibility Manager" \
+        --text="Active Prefix: <b>${ACTIVE_PREFIX}</b>\nCurrent Windows Version: <b>${CURRENT_VER}</b>\n\nPick something, I have all day:" \
+        --column="Action" --column="Description" \
+        "win7"       "Switch compatibility mode to Windows 7" \
+        "win10"      "Switch compatibility mode to Windows 10" \
+        "win11"      "Switch compatibility mode to Windows 11" \
+        "run-exe"    "Launch a Windows .exe / .msi executable" \
+        "winecfg"    "Open full Wine Configuration (winecfg)" \
+        "winetricks" "Open Winetricks (install DLLs / runtimes)" \
+        "prefix"     "Select or create a Wine Prefix" \
+        "drive-c"    "Browse Virtual C: Drive in Files" \
+        "reset"      "Refresh / initialize active prefix (wineboot -u)" \
+        --width=640 --height=420) || break
+
+    case "$ACTION" in
+        win7)
+            set_winver "$ACTIVE_PREFIX" "win7" "Windows 7"
+            ;;
+        win10)
+            set_winver "$ACTIVE_PREFIX" "win10" "Windows 10"
+            ;;
+        win11)
+            set_winver "$ACTIVE_PREFIX" "win11" "Windows 11"
+            ;;
+        run-exe)
+            EXE_PATH=$(zenity --file-selection \
+                --title="Select Windows Executable (.exe / .msi)" \
+                --file-filter="Windows Executables (*.exe *.msi) | *.exe *.EXE *.msi *.MSI" \
+                --file-filter="All Files | *") || continue
+            WINEPREFIX="$ACTIVE_PREFIX" wine start /unix "$EXE_PATH" >/dev/null 2>&1 &
+            ;;
+        winecfg)
+            WINEPREFIX="$ACTIVE_PREFIX" winecfg >/dev/null 2>&1 &
+            ;;
+        winetricks)
+            WINEPREFIX="$ACTIVE_PREFIX" winetricks --gui >/dev/null 2>&1 &
+            ;;
+        prefix)
+            select_or_create_prefix
+            ;;
+        drive-c)
+            mkdir -p "${ACTIVE_PREFIX}/drive_c"
+            xdg-open "${ACTIVE_PREFIX}/drive_c" >/dev/null 2>&1 &
+            ;;
+        reset)
+            WINEPREFIX="$ACTIVE_PREFIX" WINEDEBUG=-all wineboot -u >/dev/null 2>&1
+            zenity --info --title="Prefix Updated" --text="Initialized / refreshed:\n${ACTIVE_PREFIX}"
+            ;;
+    esac
+done

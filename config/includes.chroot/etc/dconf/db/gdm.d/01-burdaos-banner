@@ -1,0 +1,5 @@
+[org/gnome/login-screen]
+banner-message-enable=true
+banner-message-text='Oh, you\'re back. Go ahead and log in whenever you feel ready—it\'s not like the CPU has anything better to do.'
+disable-user-list=false
+logo=''

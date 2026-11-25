@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Marks Desktop .desktop launchers as trusted on first GNOME login so DING
+# allows double-clicking without an untrusted-launcher prompt.
+STAMP="${HOME}/.config/burdaos/.desktop-trusted"
+[[ -f "$STAMP" ]] && exit 0
+
+mkdir -p "$(dirname "$STAMP")"
+if command -v gio >/dev/null 2>&1; then
+    for file in "${HOME}/Desktop"/*.desktop; do
+        [[ -f "$file" ]] || continue
+        chmod +x "$file" 2>/dev/null || true
+        gio set "$file" metadata::trusted true 2>/dev/null || true
+    done
+    touch "$STAMP"
+fi

@@ -1,0 +1,12 @@
+================================================================================
+                        BurdaOS — Root Access Notice
+================================================================================
+Before you run whatever you're about to run as root, try keeping three
+simple things in mind:
+
+    #1) Yes, you have 4 Cores and 8GB RAM. No, that's not an invitation to waste them.
+    #2) Double-check the command before hitting Enter this time.
+    #3) If you break it as root, you get to fix it yourself.
+
+Good luck. You're going to need it.
+================================================================================

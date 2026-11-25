@@ -1,0 +1,8 @@
+bgnome-desktop-theme (1.0.0-1) unstable; urgency=medium
+
+  * Initial release of BGNOME Desktop for Debian-based distributions.
+  * Custom Obsidian Amber Glass GNOME Shell and GTK4/libadwaita themes.
+  * Specular rim lighting, procedural 4K SVG wallpapers, and GDM styling.
+  * System-wide GSettings override (01_bgnome.gschema.override) for Debian.
+
+ -- BGNOME Desktop Team <team@bgnome.org>  Wed, 25 Nov 2026 12:30:00 +0100

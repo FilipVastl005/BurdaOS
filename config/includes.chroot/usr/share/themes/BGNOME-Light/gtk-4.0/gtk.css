@@ -1,0 +1,153 @@
+/* ==========================================================================
+ * BGNOME — Clean GTK4 / libadwaita Theme
+ * Single close button on left, Apple-like minimalism
+ * ========================================================================== */
+
+@define-color window_bg_color #E5E5EA;
+@define-color window_fg_color #1D1D1F;
+
+@define-color view_bg_color #FFFFFF;
+@define-color view_fg_color #1D1D1F;
+
+@define-color headerbar_bg_color rgba(229, 229, 234, 0.88);
+@define-color headerbar_fg_color #1D1D1F;
+@define-color headerbar_border_color rgba(0, 0, 0, 0.07);
+@define-color headerbar_backdrop_color #E5E5EA;
+
+@define-color sidebar_bg_color #E5E5EA;
+@define-color sidebar_fg_color #1D1D1F;
+
+@define-color card_bg_color #F7F7FA;
+@define-color card_fg_color #1D1D1F;
+
+@define-color popover_bg_color rgba(255, 255, 255, 0.95);
+@define-color popover_fg_color #1D1D1F;
+
+@define-color accent_bg_color #0071E3;
+@define-color accent_fg_color #FFFFFF;
+@define-color accent_color #0071E3;
+
+@define-color destructive_bg_color #FF3B30;
+@define-color destructive_fg_color #FFFFFF;
+
+@define-color success_bg_color #34C759;
+@define-color success_fg_color #FFFFFF;
+
+@define-color warning_bg_color #FF9500;
+@define-color warning_fg_color #FFFFFF;
+
+/* --- Window & Clean Headerbar -------------------------------------------- */
+window.background {
+  background-color: #E5E5EA;
+  color: #1D1D1F;
+}
+
+window.csd {
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.10);
+}
+
+headerbar {
+  background-color: rgba(229, 229, 234, 0.88);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+/* Hide maximize & minimize buttons completely */
+headerbar windowcontrols > button.maximize,
+headerbar windowcontrols > button.minimize {
+  opacity: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+/* Clean Apple-style close button */
+headerbar windowcontrols > button.close {
+  min-width: 13px;
+  min-height: 13px;
+  border-radius: 999px;
+  background-color: #FF5F56;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: transparent;
+  padding: 0;
+  margin: 0 4px;
+  transition: all 120ms ease;
+}
+
+headerbar windowcontrols > button.close:hover {
+  background-color: #FF5F56;
+  filter: brightness(1.1);
+  color: #4C0002;
+}
+
+/* --- Clean Cards, Sidebars & Buttons ------------------------------------- */
+.navigation-sidebar {
+  background-color: #E5E5EA;
+  border-right: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.navigation-sidebar row {
+  border-radius: 8px;
+  margin: 1px 6px;
+  padding: 6px 10px;
+}
+
+.navigation-sidebar row:selected {
+  background-color: #0071E3;
+  color: #FFFFFF;
+}
+
+.card,
+list.boxed-list {
+  background-color: #F7F7FA;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+}
+
+button {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  color: #1D1D1F;
+  padding: 5px 12px;
+  font-weight: 500;
+  transition: all 120ms ease;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+button.suggested-action {
+  background-color: #0071E3;
+  color: #FFFFFF;
+  border: none;
+}
+
+button.suggested-action:hover {
+  filter: brightness(1.08);
+}
+
+switch {
+  background-color: rgba(128, 128, 128, 0.28);
+  border-radius: 999px;
+  min-width: 44px;
+  min-height: 24px;
+  border: none;
+}
+
+switch:checked {
+  background-color: #0071E3;
+}
+
+switch > slider {
+  background-color: #FFFFFF;
+  border-radius: 999px;
+  min-width: 20px;
+  min-height: 20px;
+  margin: 2px;
+}

@@ -1,0 +1,24 @@
+Source: bgnome-desktop-theme
+Section: gnome
+Priority: optional
+Maintainer: BGNOME Desktop Team <team@bgnome.org>
+Build-Depends: debhelper-compat (= 13), python3
+Standards-Version: 4.6.2
+Homepage: https://github.com/bgnome/bgnome-desktop
+
+Package: bgnome-desktop-theme
+Architecture: all
+Depends: ${misc:Depends},
+ gnome-shell (>= 45),
+ gnome-shell-extensions,
+ gsettings-desktop-schemas,
+ dconf-gsettings-backend | dconf-cli,
+ fonts-jetbrains-mono,
+ fonts-cantarell
+Recommends: gnome-shell-extension-blur-my-shell
+Suggests: gnome-shell-extension-dash-to-dock, gdm3
+Description: BGNOME Desktop - Custom Obsidian Amber Glass Theme for Debian
+ Completely redesigned GNOME Shell, GTK4/libadwaita and GTK3 theme
+ built from scratch. Features smoked glass panels, specular rim
+ highlights, warm amber/copper accents, 4K procedural wallpapers,
+ and default GSettings overrides for Debian-based distributions.

@@ -1,0 +1,38 @@
+#!/bin/sh
+# Provision user Jaroslav Burda (Burdik) with password Docasne2025+ and sudoers.
+set -e
+
+echo "[BurdaOS Hook] Provisioning user Jaroslav Burda (Burdik)..."
+getent group sudo >/dev/null 2>&1 || groupadd sudo
+
+if ! id Burdik >/dev/null 2>&1; then
+    if ! getent passwd 1000 >/dev/null 2>&1; then
+        useradd -m -u 1000 -s /bin/bash -c "Jaroslav Burda" Burdik
+    else
+        useradd -m -s /bin/bash -c "Jaroslav Burda" Burdik
+    fi
+fi
+
+for grp in sudo adm cdrom dip plugdev netdev lpadmin video audio; do
+    if getent group "$grp" >/dev/null 2>&1; then
+        usermod -aG "$grp" Burdik
+    fi
+done
+
+printf 'Burdik:Docasne2025+\nroot:Docasne2025+\n' | chpasswd
+
+mkdir -p /home/Burdik
+cp -a /etc/skel/. /home/Burdik/
+chmod +x /home/Burdik/Desktop/*.desktop 2>/dev/null || true
+chmod 0755 /home/Burdik/.config/burdaos/roasts.sh
+chown -R Burdik:Burdik /home/Burdik
+chmod 0750 /home/Burdik
+
+echo "[BurdaOS Hook] Enforcing sudoers permissions..."
+chown root:root /etc/sudoers.d /etc/sudoers.d/99-burdaos /etc/sudoers.lecture
+chmod 0750 /etc/sudoers.d
+chmod 0440 /etc/sudoers.d/99-burdaos
+chmod 0444 /etc/sudoers.lecture
+if command -v visudo >/dev/null 2>&1; then
+    visudo -cf /etc/sudoers.d/99-burdaos
+fi

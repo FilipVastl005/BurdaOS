@@ -1,0 +1,12 @@
+.build/
+out/
+cache/
+chroot/
+binary/
+.stage/
+*.iso
+*.log
+*.packages
+*.contents
+*.files
+live-image-*

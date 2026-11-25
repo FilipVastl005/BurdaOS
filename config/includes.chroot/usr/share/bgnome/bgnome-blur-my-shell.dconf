@@ -1,0 +1,32 @@
+# Optional dconf settings for Blur My Shell (hardware-accelerated Mutter blur) on Debian
+# Apply via: dconf load /org/gnome/shell/extensions/blur-my-shell/ < /usr/share/bgnome/bgnome-blur-my-shell.dconf
+
+[/]
+settings-version=2
+
+[panel]
+blur=true
+static-blur=true
+brightness=0.75
+sigma=24
+override-background=true
+style-panel=0
+
+[dash-to-dock]
+blur=true
+brightness=0.72
+sigma=28
+override-background=true
+style-dash-to-dock=0
+
+[overview]
+blur=true
+brightness=0.68
+sigma=36
+style-components=2
+
+[appfolder]
+blur=true
+brightness=0.70
+sigma=28
+style-dialogs=0

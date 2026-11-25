@@ -1,0 +1,14 @@
+menuentry "BurdaOS (@FLAVOUR@) — Standard Boot" {
+    linux @KERNEL@ @APPEND_LIVE@
+    initrd @INITRD@
+}
+
+menuentry "BurdaOS (@FLAVOUR@) — Copy to RAM (toram)" {
+    linux @KERNEL@ @APPEND_LIVE@ toram
+    initrd @INITRD@
+}
+
+menuentry "BurdaOS (@FLAVOUR@) — Safe Graphics (nomodeset)" {
+    linux @KERNEL@ @APPEND_LIVE@ nomodeset
+    initrd @INITRD@
+}

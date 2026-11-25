@@ -1,0 +1,27 @@
+#!/bin/sh
+# Install ONLYOFFICE Desktop Editors from official ONLYOFFICE Debian repository.
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+echo "[BurdaOS Hook] Adding ONLYOFFICE APT repository..."
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE \
+    | gpg --dearmor -o /etc/apt/keyrings/onlyoffice.gpg
+chmod 0644 /etc/apt/keyrings/onlyoffice.gpg
+
+printf 'deb [signed-by=/etc/apt/keyrings/onlyoffice.gpg] https://download.onlyoffice.com/repo/debian squeeze main\n' \
+    > /etc/apt/sources.list.d/onlyoffice.list
+
+apt-get update
+
+echo "[BurdaOS Hook] Installing onlyoffice-desktopeditors..."
+apt-get install -y --no-install-recommends onlyoffice-desktopeditors
+
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications >/dev/null 2>&1 || true
+fi
+
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database /usr/share/mime >/dev/null 2>&1 || true
+fi

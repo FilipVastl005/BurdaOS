@@ -1,0 +1,95 @@
+# ==============================================================================
+# BurdaOS — Debian 12 (Bookworm) Live-Build Package List
+# Target Hardware: 4 CPU Cores / 8GB RAM
+# ==============================================================================
+
+# --- Core Live System, Init & Memory Optimization ---
+live-boot
+live-config
+live-config-systemd
+systemd-sysv
+sudo
+bash-completion
+network-manager
+zram-tools
+dbus-x11
+xdg-user-dirs
+xdg-utils
+desktop-file-utils
+shared-mime-info
+dconf-cli
+fonts-cantarell
+fonts-noto
+fonts-dejavu
+fonts-jetbrains-mono
+fonts-liberation
+fonts-crosextra-carlito
+fonts-crosextra-caladea
+gnupg
+ca-certificates
+firmware-linux-free
+neofetch
+
+# --- BGNOME Desktop & Extensions ---
+gnome-core
+gdm3
+gnome-online-accounts
+gnome-shell-extensions
+gnome-shell-extension-dashtodock
+gnome-shell-extension-appindicator
+gnome-shell-extension-desktop-icons-ng
+gnome-shell-extension-prefs
+
+# --- Microsoft-Compatible Office & OneDrive Sync ---
+# Note: onlyoffice-desktopeditors is installed via 0150-install-onlyoffice.hook.chroot
+onedrive
+rclone
+fuse3
+
+# --- GUI Admin Tools ---
+gnome-control-center
+gnome-tweaks
+gnome-system-monitor
+gnome-disk-utility
+gparted
+synaptic
+gufw
+hardinfo
+cpu-x
+baobab
+file-roller
+evince
+firefox-esr
+
+# --- Full CLI Teaching Toolkit (Hardware, Sysadmin & Networking) ---
+lshw
+dmidecode
+inxi
+pciutils
+usbutils
+smartmontools
+lm-sensors
+btop
+htop
+tmux
+vim
+nano
+nmap
+tcpdump
+openssh-client
+net-tools
+dnsutils
+curl
+wget
+
+# --- System-Level Windows App Support (Wine + Binfmt + Zenity) ---
+# Note: wine32:i386 is installed by 0100-enable-i386-wine.hook.chroot after
+# enabling dpkg multiarch (i386).
+wine
+wine64
+winetricks
+cabextract
+p7zip-full
+zenity
+wine-binfmt
+binfmt-support

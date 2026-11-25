@@ -1,0 +1,24 @@
+#!/bin/sh
+# Compile GSettings/dconf databases, enable system services, and set OS branding.
+set -e
+
+echo "[BurdaOS Hook] Compiling GLib GSettings schemas..."
+if command -v glib-compile-schemas >/dev/null 2>&1; then
+    glib-compile-schemas /usr/share/glib-2.0/schemas || true
+fi
+
+echo "[BurdaOS Hook] Compiling dconf local & GDM databases..."
+if command -v dconf >/dev/null 2>&1; then
+    dconf update
+fi
+
+echo "[BurdaOS Hook] Enabling systemd services (gdm3, NetworkManager, zramswap, binfmt-support)..."
+for svc in gdm3 NetworkManager zramswap binfmt-support; do
+    systemctl enable "$svc" >/dev/null 2>&1 || true
+done
+
+echo "[BurdaOS Hook] Updating /etc/os-release branding..."
+if [ -f /etc/os-release ]; then
+    sed -i 's/^NAME=.*/NAME="BurdaOS"/' /etc/os-release || true
+    sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="BurdaOS (Debian 12 Bookworm)"/' /etc/os-release || true
+fi

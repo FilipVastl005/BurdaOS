@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+%:
+	dh $@ --with python3
+
+override_dh_auto_build:
+	python3 scripts/generate_wallpaper.py
+	python3 scripts/generate_theme.py
+
+override_dh_auto_install:
+	# 1. Themes (/usr/share/themes)
+	install -d debian/bgnome-desktop-theme/usr/share/themes
+	cp -r theme/BGNOME-Amber-Glass debian/bgnome-desktop-theme/usr/share/themes/
+	cp -r theme/BGNOME-Burnished-Copper debian/bgnome-desktop-theme/usr/share/themes/
+	cp -r theme/BGNOME-Midnight-Gold debian/bgnome-desktop-theme/usr/share/themes/
+
+	# 2. Wallpapers (/usr/share/backgrounds/bgnome)
+	install -d debian/bgnome-desktop-theme/usr/share/backgrounds/bgnome
+	install -m 644 assets/wallpapers/*.svg debian/bgnome-desktop-theme/usr/share/backgrounds/bgnome/
+
+	# 3. GLib GSettings schema overrides (/usr/share/glib-2.0/schemas)
+	install -d debian/bgnome-desktop-theme/usr/share/glib-2.0/schemas
+	install -m 644 debian/01_bgnome.gschema.override debian/bgnome-desktop-theme/usr/share/glib-2.0/schemas/
+
+	# 4. GTK4 skeleton config for new users (/etc/skel/.config/gtk-4.0)
+	install -d debian/bgnome-desktop-theme/etc/skel/.config/gtk-4.0
+	install -m 644 theme/BGNOME-Amber-Glass/gtk-4.0/gtk.css debian/bgnome-desktop-theme/etc/skel/.config/gtk-4.0/gtk.css
+
+	# 5. Blur My Shell preset profile
+	install -d debian/bgnome-desktop-theme/usr/share/bgnome
+	install -m 644 debian/bgnome-blur-my-shell.dconf debian/bgnome-desktop-theme/usr/share/bgnome/
+
+	# 6. Wayland & X11 Session Entries
+	install -d debian/bgnome-desktop-theme/usr/share/wayland-sessions
+	install -m 644 debian/bgnome-wayland.desktop debian/bgnome-desktop-theme/usr/share/wayland-sessions/

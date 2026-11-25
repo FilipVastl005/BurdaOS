@@ -1,0 +1,230 @@
+/* ==========================================================================
+ * BGNOME — Clean Apple-inspired GNOME Shell Theme
+ * System Top Bar + Frosted Glass Dock + Clean Light/Dark styling
+ * ========================================================================== */
+
+stage {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Cantarell", sans-serif;
+  font-size: 10pt;
+  color: #1D1D1F;
+}
+
+/* --- Native System Top Bar (#panel) -------------------------------------- */
+#panel {
+  background-color: rgba(229, 229, 234, 0.88);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  margin: 0;
+  padding: 0 10px;
+  height: 36px;
+  color: #1D1D1F;
+  font-weight: 500;
+  font-size: 9.5pt;
+  box-shadow: none;
+}
+
+#panel.unlock-screen,
+#panel.login-screen,
+#panel:overview {
+  background-color: rgba(229, 229, 234, 0.88);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+#panel .panel-button {
+  -natural-hpadding: 10px;
+  -minimum-hpadding: 6px;
+  margin: 3px 1px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: #1D1D1F;
+  transition-duration: 120ms;
+}
+
+#panel .panel-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+#panel .panel-button:active,
+#panel .panel-button:checked,
+#panel .panel-button:focus {
+  background-color: rgba(0, 0, 0, 0.09);
+  color: #0071E3;
+}
+
+#panel .panel-button StIcon {
+  icon-size: 15px;
+}
+
+#panel .panel-button.clock-display {
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+#panel #panelActivities .workspace-dot {
+  background-color: #6E6E73;
+  opacity: 0.4;
+  border-radius: 999px;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px;
+}
+
+#panel #panelActivities .workspace-dot.active {
+  opacity: 1;
+  background-color: #0071E3;
+  width: 16px;
+}
+
+/* --- Clean Frosted Glass Dock / Dash (#dash) ----------------------------- */
+#dash {
+  margin: 8px 16px 14px 16px;
+  padding: 0;
+}
+
+#dash .dash-background {
+  background-color: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  padding: 6px 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+#dash .dash-item-container .app-well-app,
+#dash .dash-item-container .show-apps {
+  margin: 0 2px;
+}
+
+#dash .app-well-app .overview-icon,
+#dash .show-apps .overview-icon {
+  border-radius: 14px;
+  padding: 6px;
+  transition-duration: 140ms;
+}
+
+#dash .app-well-app:hover .overview-icon,
+#dash .show-apps:hover .overview-icon {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+#dash .app-well-app:active .overview-icon {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+#dash .app-well-app-running-dot {
+  background-color: #1D1D1F;
+  opacity: 0.85;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  margin-bottom: 2px;
+}
+
+.dash-label {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: #1D1D1F;
+  font-weight: 500;
+  font-size: 9pt;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Clean Popovers & Quick Settings ------------------------------------- */
+.popup-menu-boxpointer {
+  -arrow-border-radius: 20px;
+  -arrow-background-color: transparent;
+  -arrow-border-width: 0px;
+  -arrow-base: 0px;
+  -arrow-rise: 0px;
+  margin: 6px 8px;
+}
+
+.popup-menu-content {
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+}
+
+.popup-menu-item {
+  padding: 7px 12px;
+  border-radius: 8px;
+  margin: 1px 0;
+  color: #1D1D1F;
+}
+
+.popup-menu-item:hover,
+.popup-menu-item:focus {
+  background-color: #0071E3;
+  color: #FFFFFF;
+}
+
+.quick-settings {
+  padding: 14px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+}
+
+.quick-toggle,
+.quick-menu-toggle {
+  border-radius: 14px;
+  min-height: 44px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  color: #1D1D1F;
+}
+
+.quick-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.quick-toggle:checked,
+.quick-menu-toggle .quick-toggle:checked {
+  background-color: #0071E3;
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+.quick-toggle:checked .quick-toggle-subtitle {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.slider {
+  height: 18px;
+  -barlevel-height: 6px;
+  -barlevel-background-color: rgba(128, 128, 128, 0.25);
+  -barlevel-active-background-color: #0071E3;
+  -slider-handle-radius: 8px;
+  color: #FFFFFF;
+}
+
+/* --- Window Controls (Clean Apple-like Close Only) ----------------------- */
+.window-close {
+  background-image: url("assets/close-window.svg");
+  background-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.window-close:hover {
+  background-image: url("assets/close-window-hover.svg");
+}
+
+.toggle-switch {
+  width: 46px;
+  height: 26px;
+  background-size: contain;
+  background-image: url("assets/toggle-off.svg");
+}
+
+.toggle-switch:checked {
+  background-image: url("assets/toggle-on.svg");
+}

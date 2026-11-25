@@ -1,0 +1,29 @@
+#!/bin/sh
+# Enable i386 multiarch and install 32-bit Wine + binfmt integration inside chroot.
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+echo "[BurdaOS Hook] Enabling i386 multiarch..."
+dpkg --add-architecture i386
+apt-get update
+
+echo "[BurdaOS Hook] Installing wine32:i386 and 32-bit libraries..."
+apt-get install -y --no-install-recommends \
+    wine32:i386 \
+    libwine:i386 \
+    fonts-wine
+
+echo "[BurdaOS Hook] Registering Wine binfmt and MIME handlers..."
+if command -v update-binfmts >/dev/null 2>&1; then
+    update-binfmts --import wine >/dev/null 2>&1 || true
+    update-binfmts --enable wine >/dev/null 2>&1 || true
+fi
+
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications >/dev/null 2>&1 || true
+fi
+
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database /usr/share/mime >/dev/null 2>&1 || true
+fi

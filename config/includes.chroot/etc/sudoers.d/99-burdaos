@@ -1,0 +1,18 @@
+# ==============================================================================
+# BurdaOS — Sudoers Policy (/etc/sudoers.d/99-burdaos)
+# Permissions MUST be 0440.
+# ==============================================================================
+
+# Allow sudo group members full sudo access (prompted for password so
+# custom passive-aggressive prompts are actually experienced).
+%sudo ALL=(ALL:ALL) ALL
+
+# Require re-authentication every 5 minutes and show reminder on first run
+Defaults timestamp_timeout=5
+Defaults lecture="always"
+Defaults lecture_file="/etc/sudoers.lecture"
+Defaults passwd_tries=3
+
+# Passive-aggressive password prompts
+Defaults passprompt="[BurdaOS] Oh, you want root? Bold. Password for %p: "
+Defaults badpass_message="Wrong password. No rush, take all the time you need—guessing is practically a skill too."

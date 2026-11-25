@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=BGNOME (BurdaOS Wayland)
+Comment=BGNOME Desktop — Custom Frosted Glass GNOME Session for BurdaOS
+Exec=gnome-session
+TryExec=gnome-session
+Type=Application
+DesktopNames=GNOME
+Keywords=launch;BGNOME;GNOME;BurdaOS;Debian;desktop;session;

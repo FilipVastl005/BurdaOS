@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# BurdaOS — Microsoft OneDrive & Office Sync Manager (Zenity + onedrive)
+# Syncs ~/OneDrive with Microsoft 365 / Personal OneDrive so edits made in
+# ONLYOFFICE Desktop Editors stay in sync with Microsoft Office.
+# ==============================================================================
+set -u
+
+SYNC_DIR="${HOME}/OneDrive"
+CONF_DIR="${HOME}/.config/onedrive"
+mkdir -p "${SYNC_DIR}" "${CONF_DIR}"
+
+if [[ ! -f "${CONF_DIR}/config" ]]; then
+    cat > "${CONF_DIR}/config" << EOF
+sync_dir = "${SYNC_DIR}"
+skip_symlinks = "true"
+EOF
+fi
+
+get_auth_status() {
+    if [[ -f "${CONF_DIR}/refresh_token" ]]; then
+        printf 'Connected'
+    else
+        printf 'Not signed in yet'
+    fi
+}
+
+get_service_status() {
+    if systemctl --user is-active onedrive.service >/dev/null 2>&1; then
+        printf 'Auto-sync ON'
+    else
+        printf 'Auto-sync OFF'
+    fi
+}
+
+if ! command -v zenity >/dev/null 2>&1; then
+    printf 'zenity is required.\n' >&2
+    exit 1
+fi
+
+while true; do
+    AUTH_STATUS="$(get_auth_status)"
+    SVC_STATUS="$(get_service_status)"
+
+    ACTION=$(zenity --list \
+        --title="BurdaOS Microsoft OneDrive & Office Sync" \
+        --text="Sync Folder: <b>${SYNC_DIR}</b>\nAccount Status: <b>${AUTH_STATUS}</b>  |  Daemon: <b>${SVC_STATUS}</b>\n\nSave .docx / .xlsx / .pptx files inside <b>~/OneDrive</b> to sync with Microsoft Office:" \
+        --column="Action" --column="Description" \
+        "login"      "Sign in / connect Microsoft OneDrive account (Terminal OAuth)" \
+        "sync"       "Sync now (two-way sync between ~/OneDrive and Microsoft)" \
+        "autoon"     "Enable background auto-sync (systemd --user onedrive)" \
+        "autooff"    "Disable background auto-sync" \
+        "folder"     "Open ~/OneDrive folder in Files" \
+        "onlyoffice" "Launch ONLYOFFICE Desktop Editors" \
+        "ms365"      "Open Microsoft 365 Online in Firefox" \
+        --width=660 --height=390) || break
+
+    case "$ACTION" in
+        login)
+            if command -v gnome-terminal >/dev/null 2>&1; then
+                gnome-terminal -- bash -c '
+                    echo "=== BurdaOS Microsoft OneDrive Sign-In ==="
+                    echo "1. Open the Microsoft login URL printed below in Firefox."
+                    echo "2. Sign in and copy the blank redirect URL from the address bar."
+                    echo "3. Paste it back here and press Enter."
+                    echo ""
+                    onedrive
+                    echo ""
+                    read -rp "Done. Press Enter to close..."
+                '
+            else
+                zenity --error --text="gnome-terminal not found. Run 'onedrive' in your terminal."
+            fi
+            ;;
+        sync)
+            if [[ ! -f "${CONF_DIR}/refresh_token" ]]; then
+                zenity --warning \
+                    --title="Not Signed In" \
+                    --text="You haven't signed in to OneDrive yet. Click 'login' first—unless you expected it to read your mind."
+                continue
+            fi
+            (
+                echo "15"
+                echo "# Synchronizing ${SYNC_DIR} with Microsoft OneDrive..."
+                onedrive --synchronize >/tmp/burdaos-onedrive-sync.log 2>&1
+                echo "100"
+                echo "# Sync finished."
+            ) | zenity --progress \
+                --title="BurdaOS OneDrive Sync" \
+                --text="Syncing with Microsoft OneDrive..." \
+                --percentage=0 \
+                --auto-close \
+                --no-cancel || true
+            zenity --text-info \
+                --title="OneDrive Sync Log" \
+                --filename=/tmp/burdaos-onedrive-sync.log \
+                --width=640 --height=360 || true
+            ;;
+        autoon)
+            if [[ ! -f "${CONF_DIR}/refresh_token" ]]; then
+                zenity --warning --text="Sign in first ('login') before enabling background auto-sync."
+                continue
+            fi
+            systemctl --user enable --now onedrive.service >/dev/null 2>&1 || true
+            zenity --info --text="Background OneDrive auto-sync enabled for ${SYNC_DIR}."
+            ;;
+        autooff)
+            systemctl --user disable --now onedrive.service >/dev/null 2>&1 || true
+            zenity --info --text="Background OneDrive auto-sync disabled."
+            ;;
+        folder)
+            xdg-open "${SYNC_DIR}" >/dev/null 2>&1 &
+            ;;
+        onlyoffice)
+            if command -v desktopeditors >/dev/null 2>&1; then
+                desktopeditors >/dev/null 2>&1 &
+            else
+                zenity --error --text="ONLYOFFICE (desktopeditors) is not installed."
+            fi
+            ;;
+        ms365)
+            firefox-esr "https://www.office.com" >/dev/null 2>&1 &
+            ;;
+    esac
+done

@@ -1,0 +1,58 @@
+# ==============================================================================
+# BurdaOS — BGNOME-Dark Desktop Layout (dconf)
+# ==============================================================================
+
+[org/gnome/desktop/interface]
+gtk-theme='BGNOME-Dark'
+color-scheme='prefer-dark'
+font-name='Cantarell 11'
+document-font-name='Cantarell 11'
+monospace-font-name='JetBrains Mono 10'
+icon-theme='Adwaita'
+cursor-theme='Adwaita'
+enable-animations=true
+clock-show-seconds=true
+clock-show-weekday=true
+show-battery-percentage=true
+
+[org/gnome/desktop/wm/preferences]
+theme='BGNOME-Dark'
+button-layout='close:'
+titlebar-font='Cantarell 11'
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/bgnome/bgnome-light.svg'
+picture-uri-dark='file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-options='zoom'
+primary-color='#141416'
+secondary-color='#0E0E10'
+
+[org/gnome/desktop/screensaver]
+picture-uri='file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-options='zoom'
+primary-color='#141416'
+
+[org/gnome/shell]
+disable-user-extensions=false
+enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com']
+favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'onlyoffice-desktopeditors.desktop', 'burdaos-onedrive-sync.desktop', 'burdaos-wine-manager.desktop', 'gparted.desktop', 'gnome-system-monitor.desktop', 'gnome-control-center.desktop']
+
+[org/gnome/shell/extensions/user-theme]
+name='BGNOME-Dark'
+
+# --- Dash to Dock: Floating frosted-glass bottom dock styled by BGNOME #dash ---
+[org/gnome/shell/extensions/dash-to-dock]
+dock-position='BOTTOM'
+dock-fixed=false
+extend-height=false
+apply-custom-theme=true
+dash-max-icon-size=44
+show-trash=true
+show-mounts=false
+
+# --- Desktop Icons NG (DING): Show desktop icons & handover memo ---
+[org/gnome/shell/extensions/ding]
+show-home=true
+show-trash=true
+start-corner='top-left'
+icon-size='standard'

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Microsoft OneDrive Sync
+GenericName=OneDrive & Office Sync Manager
+Comment=Sync ~/OneDrive with Microsoft 365 / OneDrive for ONLYOFFICE documents
+Exec=/usr/local/bin/burdaos-onedrive-sync
+Icon=folder-remote
+Terminal=false
+Categories=Office;Network;Utility;
+StartupNotify=true

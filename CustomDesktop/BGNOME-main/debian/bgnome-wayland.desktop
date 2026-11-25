@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=BGNOME (Wayland)
+Comment=BGNOME Desktop — Custom Obsidian Amber Glass GNOME Session for Debian
+Exec=gnome-session
+TryExec=gnome-session
+Type=Application
+DesktopNames=GNOME
+Keywords=launch;BGNOME;GNOME;Debian;desktop;session;

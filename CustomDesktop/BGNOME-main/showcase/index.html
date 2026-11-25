@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BGNOME Desktop — Pascal's Triangle & Accent Colors</title>
+  <style>
+    /* Global Apple-like Theme Variables with Dynamic Accent Support */
+    :root {
+      --accent: #0A84FF;
+      --accent-hover: #0071E3;
+      --accent-soft: rgba(10, 132, 255, 0.18);
+    }
+
+    :root[data-theme="dark"] {
+      --bg-base: #18181B;
+      --bg-surface: #202024;
+      --bg-elevated: #2A2A30;
+      --bg-card: #24242A;
+      --glass-panel: rgba(24, 24, 27, 0.88);
+      --glass-popover: rgba(32, 32, 36, 0.94);
+      --glass-dock: rgba(42, 42, 50, 0.65);
+      --glass-hover: rgba(255, 255, 255, 0.08);
+      --glass-active: rgba(255, 255, 255, 0.14);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-dock: rgba(255, 255, 255, 0.15);
+      --border-rim: rgba(255, 255, 255, 0.22);
+      --text-primary: #F5F5F7;
+      --text-secondary: #A1A1A6;
+      --text-muted: #71717A;
+      --shadow-window: 0 20px 50px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      --shadow-dock: 0 18px 42px rgba(0, 0, 0, 0.45);
+      --shadow-popover: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --node-fill: #FFFFFF;
+      --node-stroke: rgba(255, 255, 255, 0.35);
+      --node-text: #0E0E10;
+      --lattice-stroke: rgba(255, 255, 255, 0.22);
+      --wall-grad-start: #242428;
+      --wall-grad-mid: #18181B;
+      --wall-grad-end: #121214;
+    }
+
+    :root[data-theme="light"] {
+      --bg-base: #E5E5EA;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #F2F2F6;
+      --bg-card: #F7F7FA;
+      --glass-panel: rgba(229, 229, 234, 0.88);
+      --glass-popover: rgba(255, 255, 255, 0.95);
+      --glass-dock: rgba(255, 255, 255, 0.65);
+      --glass-hover: rgba(0, 0, 0, 0.05);
+      --glass-active: rgba(0, 0, 0, 0.09);
+      --border-subtle: rgba(0, 0, 0, 0.07);
+      --border-dock: rgba(0, 0, 0, 0.10);
+      --border-rim: rgba(255, 255, 255, 0.95);
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --text-muted: #8E8E93;
+      --shadow-window: 0 16px 38px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
+      --shadow-dock: 0 14px 34px rgba(0, 0, 0, 0.14);
+      --shadow-popover: 0 14px 36px rgba(0, 0, 0, 0.14);
+      --node-fill: #FFFFFF;
+      --node-stroke: rgba(0, 0, 0, 0.14);
+      --node-text: #1D1D1F;
+      --lattice-stroke: rgba(0, 0, 0, 0.16);
+      --wall-grad-start: #F2F2F6;
+      --wall-grad-mid: #E5E5EA;
+      --wall-grad-end: #D1D1D6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: background-color 220ms ease, color 220ms ease;
+    }
+
+    /* --- Procedural Pascal's Triangle Gray Wallpaper --------------------- */
+    .desktop-wallpaper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--wall-grad-start) 0%, var(--wall-grad-mid) 50%, var(--wall-grad-end) 100%);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+      transition: background 260ms ease;
+    }
+
+    .pascal-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* --- Native System Top Bar (Full width, clean GNOME) ------------------ */
+    .system-top-bar {
+      position: relative;
+      z-index: 50;
+      height: 36px;
+      background: var(--glass-panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .top-bar-left, .top-bar-center, .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-item {
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-bar-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+
+    .top-bar-btn:hover {
+      background: var(--glass-hover);
+    }
+
+    .top-bar-clock {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 6px;
+      transition: background 120ms ease;
+    }
+
+    .status-icons:hover {
+      background: var(--glass-hover);
+    }
+
+    .status-icons svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    /* --- Clean Quick Settings Popover Menu ------------------------------ */
+    .quick-settings-menu {
+      position: absolute;
+      top: 42px;
+      right: 14px;
+      width: 320px;
+      background: var(--glass-popover);
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow-popover);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: popIn 140ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .quick-settings-menu.visible {
+      display: flex;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .qs-segment {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .qs-segment-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .qs-segment-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-row svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--text-secondary);
+    }
+
+    .apple-slider {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* App Grid Overlay */
+    .app-grid-overlay {
+      position: absolute;
+      inset: 36px 0 0 0;
+      background: rgba(18, 18, 20, 0.82);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      z-index: 45;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      gap: 30px;
+      animation: popIn 180ms ease;
+    }
+
+    .app-grid-overlay.visible {
+      display: flex;
+    }
+
+    .app-grid-search {
+      width: 360px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .app-grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 100px);
+      gap: 24px;
+    }
+
+    .app-grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+
+    .app-grid-item:hover {
+      background: var(--glass-hover);
+    }
+
+    .app-grid-item span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* --- Workspace Floating Windows ------------------------------------- */
+    .workspace-area {
+      flex: 1;
+      position: relative;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .apple-window {
+      position: absolute;
+      width: 530px;
+      background: var(--glass-popover);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-radius: 14px;
+      box-shadow: var(--shadow-window);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 200ms ease;
+    }
+
+    #settings-window {
+      top: 40px;
+      left: 50px;
+    }
+
+    #terminal-window {
+      top: 130px;
+      left: 550px;
+      width: 530px;
+    }
+
+    /* Headerbar with single close button */
+    .apple-headerbar {
+      height: 40px;
+      background: var(--glass-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      cursor: grab;
+      position: relative;
+    }
+
+    .window-controls {
+      display: flex;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .btn-close {
+      width: 13px;
+      height: 13px;
+      border-radius: 999px;
+      background-color: #FF5F56;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 120ms ease;
+    }
+
+    .btn-close svg {
+      width: 7px;
+      height: 7px;
+      opacity: 0;
+      transition: opacity 120ms ease;
+    }
+
+    .btn-close:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-close:hover svg {
+      opacity: 0.8;
+    }
+
+    .window-title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.1px;
+      pointer-events: none;
+    }
+
+    .window-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Light / Dark Mode selector cards */
+    .mode-segment-bar {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      padding: 6px 0 10px 0;
+    }
+
+    .mode-card {
+      flex: 1;
+      max-width: 180px;
+      background: var(--bg-card);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 160ms ease;
+    }
+
+    .mode-card:hover {
+      background: var(--glass-hover);
+    }
+
+    .mode-card.selected {
+      border-color: var(--accent);
+      background: var(--bg-card);
+    }
+
+    .mode-preview {
+      width: 100%;
+      height: 55px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .mode-preview-bar {
+      height: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .mode-card span {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Accent color swatch circle picker */
+    .accent-picker-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .accent-swatches {
+      display: flex;
+      gap: 10px;
+    }
+
+    .accent-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 140ms ease;
+    }
+
+    .accent-circle:hover {
+      transform: scale(1.15);
+    }
+
+    .accent-circle.selected {
+      border-color: #FFFFFF;
+      box-shadow: 0 0 0 2px var(--accent);
+      transform: scale(1.18);
+    }
+
+    .setting-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .setting-row-text h4 {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .setting-row-text p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* Apple-style toggle */
+    .apple-switch {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(128, 128, 128, 0.28);
+      position: relative;
+      cursor: pointer;
+      transition: background 180ms ease;
+    }
+
+    .apple-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #FFFFFF;
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .apple-switch.checked {
+      background: var(--accent);
+    }
+
+    .apple-switch.checked::after {
+      transform: translateX(20px);
+    }
+
+    /* Terminal window */
+    .terminal-body {
+      font-family: "SF Mono", "JetBrains Mono", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 14px;
+      background: rgba(16, 16, 18, 0.95);
+      color: #F5F5F7;
+    }
+
+    .term-prompt {
+      color: var(--accent);
+      font-weight: 600;
+      transition: color 180ms ease;
+    }
+
+    .term-out {
+      color: #A1A1A6;
+      margin-bottom: 8px;
+    }
+
+    /* --- Frosted Glass Dock at the Bottom ------------------------------- */
+    .dock-container {
+      position: relative;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 12px;
+    }
+
+    .apple-dock {
+      background: var(--glass-dock);
+      backdrop-filter: blur(32px) saturate(180%);
+      -webkit-backdrop-filter: blur(32px) saturate(180%);
+      border: 1px solid var(--border-dock);
+      border-top-color: var(--border-rim);
+      border-radius: 22px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-dock);
+    }
+
+    .dock-item {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dock-item svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .dock-item:hover {
+      transform: translateY(-4px) scale(1.10);
+    }
+
+    .dock-item.running::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--text-primary);
+      opacity: 0.8;
+    }
+
+    .dock-sep {
+      width: 1px;
+      height: 28px;
+      background: var(--border-subtle);
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Minimal Gray Wallpaper with White Pascal's Triangle -->
+  <div class="desktop-wallpaper" id="wallpaper">
+    <svg class="pascal-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+      <!-- Background subtle glow aura around triangle -->
+      <radialGradient id="aura" cx="50%" cy="50%" r="45%">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.07"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+      </radialGradient>
+      <rect width="1920" height="1080" fill="url(#aura)"/>
+
+      <!-- Pascal's Triangle Lattice Lines -->
+      <g stroke="var(--lattice-stroke)" stroke-width="1.8">
+        <!-- Row 0 -> 1 -->
+        <line x1="960" y1="260" x2="905" y2="335"/>
+        <line x1="960" y1="260" x2="1015" y2="335"/>
+        <!-- Row 1 -> 2 -->
+        <line x1="905" y1="335" x2="850" y2="410"/>
+        <line x1="905" y1="335" x2="960" y2="410"/>
+        <line x1="1015" y1="335" x2="960" y2="410"/>
+        <line x1="1015" y1="335" x2="1070" y2="410"/>
+        <!-- Row 2 -> 3 -->
+        <line x1="850" y1="410" x2="795" y2="485"/>
+        <line x1="850" y1="410" x2="905" y2="485"/>
+        <line x1="960" y1="410" x2="905" y2="485"/>
+        <line x1="960" y1="410" x2="1015" y2="485"/>
+        <line x1="1070" y1="410" x2="1015" y2="485"/>
+        <line x1="1070" y1="410" x2="1125" y2="485"/>
+        <!-- Row 3 -> 4 -->
+        <line x1="795" y1="485" x2="740" y2="560"/>
+        <line x1="795" y1="485" x2="850" y2="560"/>
+        <line x1="905" y1="485" x2="850" y2="560"/>
+        <line x1="905" y1="485" x2="960" y2="560"/>
+        <line x1="1015" y1="485" x2="960" y2="560"/>
+        <line x1="1015" y1="485" x2="1070" y2="560"/>
+        <line x1="1125" y1="485" x2="1070" y2="560"/>
+        <line x1="1125" y1="485" x2="1180" y2="560"/>
+        <!-- Row 4 -> 5 -->
+        <line x1="740" y1="560" x2="685" y2="635"/>
+        <line x1="740" y1="560" x2="795" y2="635"/>
+        <line x1="850" y1="560" x2="795" y2="635"/>
+        <line x1="850" y1="560" x2="905" y2="635"/>
+        <line x1="960" y1="560" x2="905" y2="635"/>
+        <line x1="960" y1="560" x2="1015" y2="635"/>
+        <line x1="1070" y1="560" x2="1015" y2="635"/>
+        <line x1="1070" y1="560" x2="1125" y2="635"/>
+        <line x1="1180" y1="560" x2="1125" y2="635"/>
+        <line x1="1180" y1="560" x2="1235" y2="635"/>
+        <!-- Row 5 -> 6 -->
+        <line x1="685" y1="635" x2="630" y2="710"/>
+        <line x1="685" y1="635" x2="740" y2="710"/>
+        <line x1="795" y1="635" x2="740" y2="710"/>
+        <line x1="795" y1="635" x2="850" y2="710"/>
+        <line x1="905" y1="635" x2="850" y2="710"/>
+        <line x1="905" y1="635" x2="960" y2="710"/>
+        <line x1="1015" y1="635" x2="960" y2="710"/>
+        <line x1="1015" y1="635" x2="1070" y2="710"/>
+        <line x1="1125" y1="635" x2="1070" y2="710"/>
+        <line x1="1125" y1="635" x2="1180" y2="710"/>
+        <line x1="1235" y1="635" x2="1180" y2="710"/>
+        <line x1="1235" y1="635" x2="1290" y2="710"/>
+      </g>
+
+      <!-- White Circular Nodes with Pascal Values -->
+      <!-- Row 0: 1 -->
+      <g transform="translate(960, 260)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 1: 1, 1 -->
+      <g transform="translate(905, 335)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(1015, 335)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 2: 1, 2, 1 -->
+      <g transform="translate(850, 410)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(960, 410)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">2</text></g>
+      <g transform="translate(1070, 410)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 3: 1, 3, 3, 1 -->
+      <g transform="translate(795, 485)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(905, 485)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">3</text></g>
+      <g transform="translate(1015, 485)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">3</text></g>
+      <g transform="translate(1125, 485)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 4: 1, 4, 6, 4, 1 -->
+      <g transform="translate(740, 560)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(850, 560)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">4</text></g>
+      <g transform="translate(960, 560)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">6</text></g>
+      <g transform="translate(1070, 560)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">4</text></g>
+      <g transform="translate(1180, 560)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 5: 1, 5, 10, 10, 5, 1 -->
+      <g transform="translate(685, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(795, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">5</text></g>
+      <g transform="translate(905, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="4" font-size="11.5" font-weight="700" text-anchor="middle" fill="var(--node-text)">10</text></g>
+      <g transform="translate(1015, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="4" font-size="11.5" font-weight="700" text-anchor="middle" fill="var(--node-text)">10</text></g>
+      <g transform="translate(1125, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">5</text></g>
+      <g transform="translate(1235, 635)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+
+      <!-- Row 6: 1, 6, 15, 20, 15, 6, 1 -->
+      <g transform="translate(630, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+      <g transform="translate(740, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">6</text></g>
+      <g transform="translate(850, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="4" font-size="11.5" font-weight="700" text-anchor="middle" fill="var(--node-text)">15</text></g>
+      <g transform="translate(960, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="4" font-size="11.5" font-weight="700" text-anchor="middle" fill="var(--node-text)">20</text></g>
+      <g transform="translate(1070, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="4" font-size="11.5" font-weight="700" text-anchor="middle" fill="var(--node-text)">15</text></g>
+      <g transform="translate(1180, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">6</text></g>
+      <g transform="translate(1290, 710)"><circle r="22" fill="var(--node-fill)" stroke="var(--node-stroke)" stroke-width="1.6"/><text y="5" font-size="13" font-weight="700" text-anchor="middle" fill="var(--node-text)">1</text></g>
+    </svg>
+  </div>
+
+  <!-- Native System Top Bar -->
+  <header class="system-top-bar">
+    <div class="top-bar-left">
+      <div class="brand-item">
+        <span>BGNOME</span>
+      </div>
+      <button class="top-bar-btn">Activities</button>
+    </div>
+
+    <div class="top-bar-center">
+      <span class="top-bar-clock" id="clock">Wed Nov 25 13:00</span>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="status-icons" id="qs-trigger">
+        <svg viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Clean Quick Settings Popover -->
+  <div class="quick-settings-menu" id="qs-menu">
+    <div class="qs-segment">
+      <div>
+        <div class="qs-segment-title">Appearance</div>
+        <div class="qs-segment-sub" id="qs-mode-label">Dark Mode active</div>
+      </div>
+      <div class="apple-switch checked" id="qs-mode-switch" onclick="toggleAppearanceMode()"></div>
+    </div>
+
+    <div class="qs-segment">
+      <div>
+        <div class="qs-segment-title">Accent Color</div>
+        <div class="qs-segment-sub" id="qs-accent-label">Apple Blue</div>
+      </div>
+      <div style="width:16px;height:16px;border-radius:999px;background:var(--accent);"></div>
+    </div>
+
+    <div class="qs-segment" style="flex-direction:column;gap:8px;align-items:stretch;">
+      <div class="slider-row">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <input type="range" class="apple-slider" value="75" min="0" max="100"/>
+      </div>
+      <div class="slider-row">
+        <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/></svg>
+        <input type="range" class="apple-slider" value="85" min="0" max="100"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workspace Floating Windows -->
+  <main class="workspace-area">
+    <!-- Settings Window (Apple Style: single close button) -->
+    <div class="apple-window" id="settings-window">
+      <div class="apple-headerbar">
+        <div class="window-controls">
+          <div class="btn-close" title="Close" onclick="closeWindow('settings-window')">
+            <svg viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#4C0002" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="window-title">Appearance Settings</div>
+      </div>
+      <div class="window-body">
+        <!-- Light / Dark Mode Segmented Choice -->
+        <div class="mode-segment-bar">
+          <div class="mode-card" id="card-light" onclick="setMode('light')">
+            <div class="mode-preview" style="background:#E5E5EA">
+              <div class="mode-preview-bar" style="background:#FFFFFF"></div>
+            </div>
+            <span>Light</span>
+          </div>
+
+          <div class="mode-card selected" id="card-dark" onclick="setMode('dark')">
+            <div class="mode-preview" style="background:#18181B">
+              <div class="mode-preview-bar" style="background:#202024"></div>
+            </div>
+            <span>Dark</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Accent Color Picker (LIVE CHANGE) -->
+        <div class="accent-picker-row">
+          <div class="setting-row-text">
+            <h4>Accent Color</h4>
+            <p>Applied to buttons, selection, switches & indicators</p>
+          </div>
+          <div class="accent-swatches">
+            <div class="accent-circle selected" data-color="blue" style="background:#0A84FF" onclick="setAccent('blue', '#0A84FF', '#0071E3')"></div>
+            <div class="accent-circle" data-color="purple" style="background:#BF5AF2" onclick="setAccent('purple', '#BF5AF2', '#AF52DE')"></div>
+            <div class="accent-circle" data-color="orange" style="background:#FF9F0A" onclick="setAccent('orange', '#FF9F0A', '#FF9500')"></div>
+            <div class="accent-circle" data-color="green" style="background:#30D158" onclick="setAccent('green', '#30D158', '#34C759')"></div>
+            <div class="accent-circle" data-color="graphite" style="background:#98989D" onclick="setAccent('graphite', '#98989D', '#8E8E93')"></div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-row-text">
+            <h4>Pascal's Triangle Wallpaper</h4>
+            <p>Clean white mathematical lattice over minimal gray field</p>
+          </div>
+          <div class="apple-switch checked" onclick="this.classList.toggle('checked')"></div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-row-text">
+            <h4>Single Close Button</h4>
+            <p>Clean minimal titlebar with close only (button-layout: close:)</p>
+          </div>
+          <div class="apple-switch checked" onclick="this.classList.toggle('checked')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Window (Single close button) -->
+    <div class="apple-window" id="terminal-window">
+      <div class="apple-headerbar">
+        <div class="window-controls">
+          <div class="btn-close" title="Close" onclick="closeWindow('terminal-window')">
+            <svg viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#4C0002" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="window-title">ghost@debian: ~/Desktop</div>
+      </div>
+      <div class="terminal-body">
+        <div><span class="term-prompt">ghost@debian</span>:~$ gsettings get org.gnome.desktop.interface color-scheme</div>
+        <div class="term-out" id="term-scheme-out">'prefer-dark'</div>
+        <div><span class="term-prompt">ghost@debian</span>:~$ gsettings get org.gnome.desktop.background picture-uri</div>
+        <div class="term-out" id="term-wp-out">'file:///usr/share/backgrounds/bgnome/bgnome-dark.svg' (Pascal's Triangle)</div>
+        <div><span class="term-prompt">ghost@debian</span>:~$ <span style="display:inline-block;width:7px;height:14px;background:var(--accent);vertical-align:middle;animation:blink 1s infinite"></span></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Frosted Glass Dock at the Bottom -->
+  <div class="dock-container">
+    <nav class="apple-dock">
+      <div class="dock-item running" title="Files (Finder)">
+        <svg viewBox="0 0 24 24" id="dock-files-icon" fill="var(--accent)"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+      </div>
+      <div class="dock-item running" title="Terminal">
+        <svg viewBox="0 0 24 24" fill="#6E6E73"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-12-3l4-3-4-3 1.4-1.4 5.4 4.4-5.4 4.4L8 15zm5 0h6v2h-6v-2z"/></svg>
+      </div>
+      <div class="dock-item running" title="Browser">
+        <svg viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 10l-2.42 6.59L14 14l2.59-6.42z"/></svg>
+      </div>
+      <div class="dock-item running" title="Settings">
+        <svg viewBox="0 0 24 24" fill="#8E8E93"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.9 2h-3.8c-.24 0-.44.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.485.485 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.8c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      </div>
+
+      <div class="dock-sep"></div>
+
+      <div class="dock-item" title="All Apps (App Grid)" onclick="toggleAppGrid()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+      </div>
+    </nav>
+  </div>
+
+  <!-- All Apps Fullscreen App Grid Overlay -->
+  <div class="app-grid-overlay" id="app-grid-overlay" onclick="if(event.target===this) toggleAppGrid()">
+    <input type="text" class="app-grid-search" placeholder="Type to search all applications..." />
+    <div class="app-grid-container">
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#0A84FF"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span>Files</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#6E6E73"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-12-3l4-3-4-3 1.4-1.4 5.4 4.4-5.4 4.4L8 15zm5 0h6v2h-6v-2z"/></svg><span>Terminal</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#0071E3"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 10l-2.42 6.59L14 14l2.59-6.42z"/></svg><span>Browser</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#8E8E93"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.9 2h-3.8c-.24 0-.44.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.485.485 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.8c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>Settings</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#30D158"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Messages</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#FF9500"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span>Music</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#FF375F"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Photos</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#BF5AF2"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span>Text Editor</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#64D2FF"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg><span>Calendar</span></div>
+      <div class="app-grid-item"><svg width="40" height="40" viewBox="0 0 24 24" fill="#30D158"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span>Software</span></div>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'dark';
+    let currentAccent = 'blue';
+
+    const accentPalette = {
+      blue: { dark: '#0A84FF', light: '#0071E3', name: 'Apple Blue' },
+      purple: { dark: '#BF5AF2', light: '#AF52DE', name: 'Purple' },
+      orange: { dark: '#FF9F0A', light: '#FF9500', name: 'Orange' },
+      green: { dark: '#30D158', light: '#34C759', name: 'Green' },
+      graphite: { dark: '#98989D', light: '#8E8E93', name: 'Graphite' }
+    };
+
+    function applyAccentColor() {
+      const colors = accentPalette[currentAccent];
+      const colorVal = (currentMode === 'dark') ? colors.dark : colors.light;
+      document.documentElement.style.setProperty('--accent', colorVal);
+
+      const qsLabel = document.getElementById('qs-accent-label');
+      if (qsLabel) qsLabel.textContent = colors.name;
+    }
+
+    function setAccent(colorKey, darkVal, lightVal) {
+      currentAccent = colorKey;
+      applyAccentColor();
+
+      document.querySelectorAll('.accent-circle').forEach(c => {
+        c.classList.toggle('selected', c.dataset.color === colorKey);
+      });
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.body.setAttribute('data-theme', mode);
+      document.getElementById('card-light').classList.toggle('selected', mode === 'light');
+      document.getElementById('card-dark').classList.toggle('selected', mode === 'dark');
+
+      const isDark = (mode === 'dark');
+      const switchEl = document.getElementById('qs-mode-switch');
+      if (switchEl) switchEl.classList.toggle('checked', isDark);
+
+      const labelEl = document.getElementById('qs-mode-label');
+      if (labelEl) labelEl.textContent = isDark ? 'Dark Mode active' : 'Light Mode active';
+
+      const termScheme = document.getElementById('term-scheme-out');
+      if (termScheme) termScheme.textContent = isDark ? "'prefer-dark'" : "'prefer-light'";
+
+      const termWp = document.getElementById('term-wp-out');
+      if (termWp) termWp.textContent = isDark
+        ? "'file:///usr/share/backgrounds/bgnome/bgnome-dark.svg' (Pascal's Triangle)"
+        : "'file:///usr/share/backgrounds/bgnome/bgnome-light.svg' (Pascal's Triangle)";
+
+      applyAccentColor();
+    }
+
+    function toggleAppearanceMode() {
+      setMode(currentMode === 'dark' ? 'light' : 'dark');
+    }
+
+    function toggleAppGrid() {
+      const grid = document.getElementById('app-grid-overlay');
+      if (grid) grid.classList.toggle('visible');
+    }
+
+    function closeWindow(id) {
+      const w = document.getElementById(id);
+      if (w) {
+        w.style.opacity = '0';
+        w.style.transform = 'scale(0.92)';
+        w.style.transition = 'all 160ms ease';
+        setTimeout(() => w.style.display = 'none', 160);
+      }
+    }
+
+    // Quick Settings Menu Toggle
+    const qsTrigger = document.getElementById('qs-trigger');
+    const qsMenu = document.getElementById('qs-menu');
+    qsTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      qsMenu.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!qsMenu.contains(e.target) && !qsTrigger.contains(e.target)) {
+        qsMenu.classList.remove('visible');
+      }
+    });
+
+    // Window Dragging
+    function makeDraggable(el, handle) {
+      let isDragging = false, startX, startY, origX, origY;
+      handle.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = el.getBoundingClientRect();
+        origX = rect.left;
+        origY = rect.top;
+        el.style.zIndex = 30;
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        el.style.left = (origX + (e.clientX - startX)) + 'px';
+        el.style.top = (origY + (e.clientY - startY)) + 'px';
+      });
+      document.addEventListener('mouseup', () => { isDragging = false; });
+    }
+
+    makeDraggable(document.getElementById('settings-window'), document.querySelector('#settings-window .apple-headerbar'));
+    makeDraggable(document.getElementById('terminal-window'), document.querySelector('#terminal-window .apple-headerbar'));
+  </script>
+</body>
+</html>
