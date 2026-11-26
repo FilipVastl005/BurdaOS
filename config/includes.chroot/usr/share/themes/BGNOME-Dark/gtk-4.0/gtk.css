@@ -54,34 +54,34 @@ headerbar {
   padding: 0 12px;
 }
 
-/* Hide maximize & minimize buttons completely */
-headerbar windowcontrols > button.maximize,
-headerbar windowcontrols > button.minimize {
-  opacity: 0;
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  margin: 0;
-  border: none;
+/* Crisp, visible minimize / maximize / close window buttons */
+headerbar windowcontrols {
+  margin: 0 4px;
 }
 
-/* Clean Apple-style close button */
+headerbar windowcontrols > button.minimize,
+headerbar windowcontrols > button.maximize,
 headerbar windowcontrols > button.close {
-  min-width: 13px;
-  min-height: 13px;
-  border-radius: 999px;
-  background-color: #FF5F56;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  color: transparent;
-  padding: 0;
-  margin: 0 4px;
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #F5F5F7;
+  padding: 2px;
+  margin: 0 3px;
   transition: all 120ms ease;
 }
 
+headerbar windowcontrols > button.minimize:hover,
+headerbar windowcontrols > button.maximize:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
 headerbar windowcontrols > button.close:hover {
-  background-color: #FF5F56;
-  filter: brightness(1.1);
-  color: #4C0002;
+  background-color: #FF453A;
+  color: #FFFFFF;
+  border-color: rgba(255, 69, 58, 0.6);
 }
 
 /* --- Clean Cards, Sidebars & Buttons ------------------------------------- */

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>burdaos grid</name>
+    <filename>/usr/share/backgrounds/burdaos/burdaos-grid.png</filename>
+    <options>zoom</options>
+    <pcolor>#141416</pcolor>
+    <scolor>#0E0E10</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+</wallpapers>

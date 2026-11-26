@@ -10,7 +10,7 @@ document-font-name='Cantarell 11'
 monospace-font-name='JetBrains Mono 10'
 font-antialiasing='rgba'
 font-hinting='slight'
-icon-theme='Adwaita'
+icon-theme='Papirus-Dark'
 cursor-theme='Adwaita'
 enable-animations=true
 clock-show-seconds=true
@@ -19,7 +19,7 @@ show-battery-percentage=true
 
 [org/gnome/desktop/wm/preferences]
 theme='BGNOME-Dark'
-button-layout='close:'
+button-layout='appmenu:minimize,maximize,close'
 titlebar-font='Cantarell 11'
 
 [org/gnome/mutter]
@@ -27,24 +27,35 @@ edge-tiling=true
 center-new-windows=true
 
 [org/gnome/desktop/background]
-picture-uri='file:///usr/share/backgrounds/bgnome/bgnome-light.svg'
-picture-uri-dark='file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-uri='file:///usr/share/backgrounds/burdaos/GaSOSLogo.png'
+picture-uri-dark='file:///usr/share/backgrounds/burdaos/GaSOSLogo.png'
 picture-options='zoom'
 primary-color='#141416'
 secondary-color='#0E0E10'
 
 [org/gnome/desktop/screensaver]
-picture-uri='file:///usr/share/backgrounds/bgnome/bgnome-dark.svg'
+picture-uri='file:///usr/share/backgrounds/burdaos/GaSOSLogo.png'
 picture-options='zoom'
 primary-color='#141416'
 
 [org/gnome/shell]
 disable-user-extensions=false
 enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'ding@rastersoft.com', 'GPaste@gnome-shell-extensions.gnome.org', 'tiling-assistant@leleat-on-github', 'caffeine@patapon.info', 'system-monitor@paradoxxx.zero.gmail.com', 'impatience@gfxmonk.net']
-favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'onlyoffice-desktopeditors.desktop', 'burdaos-onedrive-sync.desktop', 'burdaos-wine-manager.desktop', 'gparted.desktop', 'gnome-system-monitor.desktop', 'gnome-control-center.desktop']
+favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'burdaos-onedrive.desktop', 'onlyoffice-desktopeditors.desktop', 'burdaos-onedrive-sync.desktop', 'burdaos-wine-manager.desktop', 'gparted.desktop', 'gnome-system-monitor.desktop', 'gnome-control-center.desktop']
 
 [org/gnome/shell/extensions/user-theme]
 name='BGNOME-Dark'
+
+# --- Dash to Panel: Safe edge/tray padding if Dash-to-Panel is active ---
+[org/gnome/shell/extensions/dash-to-panel]
+panel-positions='{"0":"BOTTOM"}'
+panel-sizes='{"0":48}'
+appicon-margin=6
+appicon-padding=6
+tray-padding=8
+leftbox-padding=8
+status-icon-padding=6
+panel-element-positions='{"0":[{"element":"showAppsButton","visible":false,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centerMonitor"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'
 
 # --- Dash to Dock: Floating frosted-glass bottom dock styled by BGNOME #dash ---
 [org/gnome/shell/extensions/dash-to-dock]

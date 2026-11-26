@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=OneDrive
+GenericName=Microsoft OneDrive Web App
+Comment=Open Microsoft OneDrive in a dedicated Chromium app window (works with school M365 accounts)
+Exec=chromium --app=https://www.office.com/launch/onedrive --class=OneDrive --name=OneDrive
+Icon=folder-remote
+Terminal=false
+Categories=Office;Network;Utility;
+StartupWMClass=OneDrive
+StartupNotify=true

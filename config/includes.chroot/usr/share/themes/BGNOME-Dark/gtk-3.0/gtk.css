@@ -1,5 +1,5 @@
 /* ==========================================================================
- * BGNOME — GTK3 Theme
+ * BGNOME — GTK3 Theme (BurdaOS Clean Titlebars)
  * ========================================================================== */
 
 @define-color theme_bg_color #18181B;
@@ -17,24 +17,34 @@ window,
 }
 
 headerbar {
-  background-color: rgba(24, 24, 27, 0.88);
+  background-color: rgba(24, 24, 27, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   min-height: 38px;
+  padding: 0 12px;
 }
 
+headerbar button.titlebutton.minimize,
 headerbar button.titlebutton.maximize,
-headerbar button.titlebutton.minimize {
-  display: none;
+headerbar button.titlebutton.close {
+  min-width: 24px;
+  min-height: 24px;
+  margin: 0 3px;
+  padding: 2px;
+  border-radius: 6px;
+  color: #F5F5F7;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-headerbar button.titlebutton.close {
-  min-width: 13px;
-  min-height: 13px;
-  border-radius: 999px;
-  background-color: #FF5F56;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  color: transparent;
-  padding: 0;
+headerbar button.titlebutton.minimize:hover,
+headerbar button.titlebutton.maximize:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+headerbar button.titlebutton.close:hover {
+  background-color: #FF453A;
+  color: #FFFFFF;
+  border-color: rgba(255, 69, 58, 0.6);
 }
 
 button {

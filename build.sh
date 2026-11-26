@@ -25,6 +25,9 @@ prepare_assets() {
     python3 "${SCRIPT_DIR}/scripts/generate-wallpaper.py" \
         "${SCRIPT_DIR}/config/includes.chroot/usr/share/backgrounds/burdaos"
 
+    log "Importing media-pool wallpapers & user avatars..."
+    python3 "${SCRIPT_DIR}/scripts/import-media-pool.py"
+
     log "Enforcing script and sudoers permissions in config/..."
     chmod 0750 "${SCRIPT_DIR}/config/includes.chroot/etc/sudoers.d"
     chmod 0440 "${SCRIPT_DIR}/config/includes.chroot/etc/sudoers.d/99-burdaos"
